@@ -1,39 +1,34 @@
-const router = require("express").Router();
-const Company = require("../models/company");
-const Lead = require("../models/lead");
-const authMiddleware = require("../middleware/AuthMiddleware");
+const express = require("express");
+const Company = require("../models/Company");
+const Lead = require("../models/Lead");
+const authMiddleware = require("../middleware/authMiddleware");
+
+const router = express.Router();
 
 router.post("/", authMiddleware, async (req, res) => {
-  try {
-    const company = await Company.create(req.body);
-    res.status(201).json(company);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
+  const company = await Company.create(req.body);
+  res.status(201).json(company);
 });
 
 router.get("/", authMiddleware, async (req, res) => {
-  try {
-    const companies = await Company.find();
-    res.json(companies);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
+  const companies = await Company.find();
+  res.json(companies);
 });
 
 router.get("/:id", authMiddleware, async (req, res) => {
-  try {
-    const company = await Company.findById(req.params.id);
+  const company = await Company.findById(
+    req.params.id
+  );
 
-    const leads = await Lead.find({
-      company: req.params.id,
-      isDeleted: false
-    }).populate("assignedTo", "name");
+  const leads = await Lead.find({
+    company: req.params.id,
+    isDeleted: false
+  });
 
-    res.json({ company, leads });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
+  res.json({
+    company,
+    leads
+  });
 });
 
 module.exports = router;

@@ -5,19 +5,28 @@ const leadSchema = new mongoose.Schema(
     name: { type: String, required: true },
     email: String,
     phone: String,
+
     status: {
       type: String,
-      enum: ["New", "Contacted", "Qualified", "Lost"],
+      enum: [
+        "New",
+        "Contacted",
+        "Qualified",
+        "Lost"
+      ],
       default: "New"
     },
+
     assignedTo: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User"
     },
+
     company: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Company"
     },
+
     isDeleted: {
       type: Boolean,
       default: false
@@ -26,4 +35,7 @@ const leadSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-module.exports = mongoose.model("Lead", leadSchema);
+module.exports = mongoose.model(
+  "Lead",
+  leadSchema
+);

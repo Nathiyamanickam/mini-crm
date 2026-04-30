@@ -1,12 +1,14 @@
-const router = require("express").Router();
-const User = require("../models/user");
-const bcrypt = require("bcryptjs");
+const express = require("express");
+const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const User = require("../models/User");
+
+const router = express.Router();
 
 router.post("/register", async (req, res) => {
-  try { 
-    const { name, email, password } = req.body;
+  const { name, email, password } = req.body;
 
+  try {
     const existingUser = await User.findOne({ email });
 
     if (existingUser) {
@@ -15,7 +17,10 @@ router.post("/register", async (req, res) => {
       });
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const hashedPassword = await bcrypt.hash(
+      password,
+      10
+    );
 
     const user = await User.create({
       name,
@@ -24,8 +29,7 @@ router.post("/register", async (req, res) => {
     });
 
     res.status(201).json({
-      message: "User registered successfully",
-      user
+      message: "User registered successfully"
     });
 
   } catch (error) {
@@ -36,9 +40,9 @@ router.post("/register", async (req, res) => {
 });
 
 router.post("/login", async (req, res) => {
-  try {
-    const { email, password } = req.body;
+  const { email, password } = req.body;
 
+  try {
     const user = await User.findOne({ email });
 
     if (!user) {
@@ -64,9 +68,7 @@ router.post("/login", async (req, res) => {
         name: user.name
       },
       process.env.JWT_SECRET,
-      {
-        expiresIn: "1d"
-      }
+      { expiresIn: "7d" }
     );
 
     res.json({
@@ -83,6 +85,14 @@ router.post("/login", async (req, res) => {
       message: error.message
     });
   }
+});
+
+router.get("/users", async (req, res) => {
+  const users = await User.find().select(
+    "name email"
+  );
+
+  res.json(users);
 });
 
 module.exports = router;
