@@ -64,7 +64,12 @@ function Login() {
           required
         />
 
-        <button type="submit">Login</button>
+        <button type="submit">Login</button>   
+
+        <h4>Sample data</h4>
+
+        <h5>User name:admin@test.com</h5>
+        <h5>Password:123456</h5>
       </form>
     </div>
   );
