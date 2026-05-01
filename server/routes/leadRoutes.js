@@ -10,11 +10,7 @@ router.post("/", authMiddleware, async (req, res) => {
 });
 
 router.get("/", authMiddleware, async (req, res) => {
-  const {
-    search = "",
-    status = "",
-    page = 1
-  } = req.query;
+  const { search = "", status = "", page = 1 } = req.query;
 
   const limit = 5;
 
@@ -22,8 +18,8 @@ router.get("/", authMiddleware, async (req, res) => {
     isDeleted: false,
     name: {
       $regex: search,
-      $options: "i"
-    }
+      $options: "i",
+    },
   };
 
   if (status) {
@@ -40,28 +36,23 @@ router.get("/", authMiddleware, async (req, res) => {
 
   res.json({
     leads,
-    totalPages: Math.ceil(total / limit)
+    totalPages: Math.ceil(total / limit),
   });
 });
 
 router.put("/:id", authMiddleware, async (req, res) => {
-  const lead = await Lead.findByIdAndUpdate(
-    req.params.id,
-    req.body,
-    { new: true }
-  );
+  const lead = await Lead.findByIdAndUpdate(req.params.id, req.body, {
+    new: true,
+  });
 
   res.json(lead);
 });
 
 router.delete("/:id", authMiddleware, async (req, res) => {
-  await Lead.findByIdAndUpdate(
-    req.params.id,
-    { isDeleted: true }
-  );
+  await Lead.findByIdAndUpdate(req.params.id, { isDeleted: true });
 
   res.json({
-    message: "Lead soft deleted"
+    message: "Lead soft deleted",
   });
 });
 
